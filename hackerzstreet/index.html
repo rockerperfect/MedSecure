@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedSecure - HIPAA-Compliant Medical Record Exchange</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    
+    <!-- Firebase SDKs - Load in correct order -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-analytics-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-performance-compat.js"></script>
+    
+    <!-- Utility modules - Load these first -->
+    <script src="js/utils.js"></script>
+    <script src="js/encryption.js"></script>
+    <script src="js/dataStore.js"></script>
+    <script src="js/auditLogger.js"></script>
+    
+    <!-- App configuration - must be loaded after Firebase SDKs -->
+    <script src="js/firebaseConfig.js"></script>
+    
+    <!-- Firebase coordination modules -->
+    <script src="js/firebase-fix.js"></script>
+    <script src="js/firebase-diagnostics.js"></script>
+    <script src="js/firebase-coordinator.js"></script>
+    
+    <!-- Firebase feature modules -->
+    <script src="js/firebaseAuth.js"></script>
+    <script src="js/firebaseDB.js"></script>
+    <script src="js/firebaseFirestore.js"></script>
+    <script src="js/firebaseStorage.js"></script>
+    <script src="js/firebase-storage.js"></script>
+    
+    <!-- Application modules - loaded in dependency order -->
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/records.js"></script>
+    <script src="js/sharing.js"></script>
+    <script src="js/audit.js"></script>
+    <script src="js/chatbot.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/js/all.min.js"></script>
+    
+    <!-- Initialization script with proper dependency chain -->
+    <script>
+        // Ensure all Firebase modules are loaded and initialized properly before using them
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                console.log('DOMContentLoaded - starting application initialization');
+                
+                // Log the status of core modules
+                console.log('Firebase SDK available:', typeof firebase !== 'undefined');
+                console.log('FirebaseConfig available:', typeof FirebaseConfig !== 'undefined');
+                console.log('FirebaseCoordinator available:', typeof FirebaseCoordinator !== 'undefined');
+                console.log('FirebaseAuth available:', typeof FirebaseAuth !== 'undefined');
+                
+                // Initialize Firebase coordinator first and wait for it to complete
+                if (typeof FirebaseCoordinator !== 'undefined') {
+                    console.log('Initializing Firebase Coordinator...');
+                    
+                    FirebaseCoordinator.init().then(function(success) {
+                        console.log('Firebase Coordinator initialization complete, result:', success);
+                        
+                        // Firebase Auth will be automatically initialized by the coordinator
+                        // Now we can proceed with any app-specific initialization
+                        
+                        // Make sure FirebaseAuth is initialized
+                        if (typeof FirebaseAuth !== 'undefined') {
+                            const initResult = FirebaseAuth.init();
+                            console.log('FirebaseAuth initialization result:', initResult);
+                        }
+                        
+                        // In case you need to check Firebase Auth status
+                        setTimeout(function() {
+                            if (typeof FirebaseAuth !== 'undefined') {
+                                const currentUser = FirebaseAuth.getCurrentUser();
+                                console.log('Current auth user:', currentUser ? 'User found' : 'No user found');
+                            }
+                        }, 1000);
+                    }).catch(function(error) {
+                        console.error('Error initializing Firebase:', error);
+                        // Handle the error - still allow the application to run in offline mode
+                    });
+                } else {
+                    console.error('FirebaseCoordinator not available');
+                }
+            } catch (error) {
+                console.error('Error during initialization:', error);
+            }
+        });
+    </script>
+    
+    <!-- Inline styles for direct login form centering -->
+    <style>
+        #login-view.view.active {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            min-height: 100vh !important;
+            width: 100% !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            background-color: #f8f9fa !important;
+            z-index: 9999 !important;
+            overflow-y: auto !important;
+        }
+        
+        #login-view .auth-container {
+            background-color: #ffffff !important;
+            border-radius: 8px !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+            width: 100% !important;
+            max-width: 480px !important;
+            padding: 2rem !important;
+            margin: 2rem auto !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login/Registration Section -->
+    <div id="login-view" class="view active">
+        <div class="auth-container">
+            <div class="logo">
+                <h1><i class="fas fa-shield-alt"></i> MedSecure</h1>
+                <p>HIPAA-Compliant Medical Record Exchange</p>
+            </div>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="login">Login</button>
+                <button class="tab-btn" data-tab="register">Register</button>
+            </div>
+            
+            <div id="login-form" class="form-container active">
+                <h2>Login to Your Account</h2>
+                <form id="login">
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" required>
+                    </div>
+                    <div class="form-group">
+                        <a href="#" id="forgot-password" class="text-link">Forgot password?</a>
+                    </div>
+                    <div id="login-error" class="error-message hidden"></div>
+                    <button type="submit" class="btn primary-btn">Login</button>
+                </form>
+            </div>
+            
+            <div id="register-form" class="form-container">
+                <h2>Create New Account</h2>
+                <form id="register">
+                    <div class="form-group">
+                        <label for="reg-name">Full Name</label>
+                        <input type="text" id="reg-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-role">Role</label>
+                        <select id="reg-role" required>
+                            <option value="patient">Patient</option>
+                            <option value="doctor">Healthcare Provider</option>
+                            <option value="admin">Administrator</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" required minlength="12">
+                        <meter id="password-strength-meter" min="0" max="4" low="2" high="3" optimum="4" value="0"></meter>
+                        <p id="password-strength-text" class="help-text">Password strength: No password entered</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-confirm-password">Confirm Password</label>
+                        <input type="password" id="reg-confirm-password" required>
+                    </div>
+                    <div class="form-group checkbox-container">
+                        <input type="checkbox" id="reg-mfa-enabled" checked>
+                        <label for="reg-mfa-enabled">Enable Two-Factor Authentication (Recommended)</label>
+                    </div>
+                    <div class="form-group consent-section">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="terms-consent" required>
+                            <label for="terms-consent">I agree to the Terms of Service and Privacy Policy</label>
+                        </div>
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="hipaa-consent" required>
+                            <label for="hipaa-consent">I understand this platform adheres to HIPAA regulations</label>
+                        </div>
+                    </div>
+                    <div id="register-error" class="error-message hidden"></div>
+                    <button type="submit" class="btn primary-btn">Register</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="app-container">
+        <!-- Main Application Section -->
+        <div id="app-section" class="section">
+            <header>
+                <div class="logo">
+                    <h1><i class="fas fa-shield-alt"></i> MedSecure</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#" class="nav-link active" data-view="dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="#" class="nav-link" data-view="records"><i class="fas fa-file-medical"></i> My Records</a></li>
+                        <li><a href="#" class="nav-link" data-view="share"><i class="fas fa-share-alt"></i> Share</a></li>
+                        <li><a href="#" class="nav-link" data-view="audit"><i class="fas fa-history"></i> Audit Log</a></li>
+                        <li><a href="#" class="nav-link" data-view="chatbot"><i class="fas fa-robot"></i> Medical AI</a></li>
+                        <li><a href="#" class="nav-link" data-view="settings"><i class="fas fa-cog"></i> Settings</a></li>
+                    </ul>
+                </nav>
+                <div class="user-menu">
+                    <div class="notifications-dropdown">
+                        <button class="notifications-btn" id="notifications-toggle">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge" id="notification-count">0</span>
+                        </button>
+                        <div class="notifications-menu" id="notifications-menu">
+                            <div class="notifications-header">
+                                <h3>Notifications</h3>
+                                <button id="mark-all-read" class="btn secondary-btn">Mark all read</button>
+                            </div>
+                            <ul class="notifications-list" id="notifications-list">
+                                <li class="empty-notification">No notifications</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="user-info">
+                        <span id="user-name">User Name</span>
+                        <span class="role-indicator" id="user-role-display">Patient</span>
+                    </div>
+                    <button id="logout-btn" class="btn secondary-btn">Logout</button>
+                </div>
+            </header>
+
+            <main>
+                <!-- Dashboard View -->
+                <section id="dashboard-view" class="view active">
+                    <h2 id="dashboard-title">Dashboard</h2>
+                    
+                    <div class="dashboard-summary">
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-file-medical"></i></div>
+                            <div class="summary-info">
+                                <h3>Total Records</h3>
+                                <p class="summary-count" id="records-count">0</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-share-alt"></i></div>
+                            <div class="summary-info">
+                                <h3>Shared Records</h3>
+                                <p class="summary-count" id="shared-count">0</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-users"></i></div>
+                            <div class="summary-info">
+                                <h3>Trusted Providers</h3>
+                                <p class="summary-count" id="providers-count">0</p>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <div class="summary-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="summary-info">
+                                <h3>Security Score</h3>
+                                <p class="summary-count">85%</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cards-container">
+                        <div class="card">
+                            <h3><i class="fas fa-file-medical"></i> Recent Records</h3>
+                            <div id="recent-records" class="mini-records-list">
+                                <p class="empty-state">No recent records.</p>
+                            </div>
+                            <button class="btn secondary-btn" data-action="view-records">View All Records</button>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-share-alt"></i> Shared With Me</h3>
+                            <div id="shared-records" class="mini-records-list">
+                                <p class="empty-state">No records shared with you.</p>
+                            </div>
+                            <button class="btn secondary-btn" data-action="view-shared">View All Shared</button>
+                        </div>
+                        <div class="card">
+                            <h3><i class="fas fa-history"></i> Recent Activity</h3>
+                            <ul id="recent-activity" class="activity-list">
+                                <li class="activity-item">No recent activity</li>
+                            </ul>
+                            <button class="btn secondary-btn" data-action="view-audit">View Full History</button>
+                        </div>
+                    </div>
+                    
+                    <div class="quick-actions">
+                        <h3>Quick Actions</h3>
+                        <div class="action-buttons">
+                            <button class="btn primary-btn" id="quick-upload"><i class="fas fa-upload"></i> Upload Record</button>
+                            <button class="btn primary-btn" id="quick-share"><i class="fas fa-share-alt"></i> Share Record</button>
+                            <button class="btn primary-btn" id="quick-download"><i class="fas fa-download"></i> Download Records</button>
+                            <button class="btn primary-btn" id="quick-provider"><i class="fas fa-user-md"></i> Add Provider</button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Records View -->
+                <section id="records-view" class="view">
+                    <h2><i class="fas fa-file-medical"></i> Medical Records</h2>
+                    <div class="view-controls">
+                        <div class="search-container">
+                            <input type="text" id="record-search" placeholder="Search records...">
+                            <button id="search-btn"><i class="fas fa-search"></i></button>
+                        </div>
+                        <div class="filter-container">
+                            <select id="record-type-filter">
+                                <option value="all">All Types</option>
+                                <option value="lab">Lab Results</option>
+                                <option value="prescription">Prescriptions</option>
+                                <option value="imaging">Imaging</option>
+                                <option value="clinical">Clinical Notes</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button id="upload-record-btn" class="btn primary-btn"><i class="fas fa-upload"></i> Upload New Record</button>
+                    </div>
+                    
+                    <!-- Quick Upload Button for easy access -->
+                    <div class="quick-upload-section">
+                        <button id="quick-upload-records-btn" class="btn secondary-btn"><i class="fas fa-upload"></i> Quick Upload</button>
+                        <span class="tip">Quickly upload a new medical record</span>
+                    </div>
+                    
+                    <div class="records-list" id="user-records">
+                        <p class="empty-state">No records found. Upload your first medical record.</p>
+                    </div>
+                    
+                    <!-- Empty state upload button -->
+                    <div id="empty-records-action" class="empty-state-action" style="display: none;">
+                        <p>Ready to add your first medical record?</p>
+                        <button id="upload-record-empty-btn" class="btn primary-btn"><i class="fas fa-upload"></i> Upload Medical Record</button>
+                    </div>
+                    
+                    <!-- Upload Modal -->
+                    <div id="upload-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2>Upload Medical Record</h2>
+                            <form id="upload-form">
+                                <div class="form-group">
+                                    <label for="record-title">Record Title</label>
+                                    <input type="text" id="record-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="record-type">Record Type</label>
+                                    <select id="record-type" required>
+                                        <option value="lab">Lab Result</option>
+                                        <option value="prescription">Prescription</option>
+                                        <option value="imaging">Imaging</option>
+                                        <option value="clinical">Clinical Note</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="record-date">Date</label>
+                                    <input type="date" id="record-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="record-file">File Attachment (Image or Document)</label>
+                                    <div class="file-upload-container">
+                                        <input type="file" id="record-file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.gif,.tiff" required>
+                                        <p class="upload-hint">Drop file here or click to browse</p>
+                                        <p class="file-types">Supported formats: PDF, JPG, PNG, DOCX</p>
+                                    </div>
+                                    <div class="file-preview" style="display: none;">
+                                        <h4>File Preview</h4>
+                                        <div class="preview-container"></div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="record-notes">Notes</label>
+                                    <textarea id="record-notes" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Upload Record</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- View Record Modal -->
+                    <div id="record-modal" class="modal">
+                        <div class="modal-content">
+                            <span class="close">&times;</span>
+                            <h2 class="record-title">Medical Record</h2>
+                            <div class="record-details-container">
+                                <div class="record-metadata">
+                                    <p><strong>Type:</strong> <span class="record-type"></span></p>
+                                    <p><strong>Date:</strong> <span class="record-date"></span></p>
+                                    <p><strong>Notes:</strong> <span class="record-notes"></span></p>
+                                </div>
+                                <div class="record-image-container">
+                                    <!-- Image or file will be inserted here -->
+                                </div>
+                            </div>
+                            <div class="record-actions-container">
+                                <button class="btn secondary-btn" id="download-record"><i class="fas fa-download"></i> Download</button>
+                                <button class="btn secondary-btn" id="share-record-btn"><i class="fas fa-share-alt"></i> Share</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Share View -->
+                <section id="share-view" class="view">
+                    <h2><i class="fas fa-share-alt"></i> Share Medical Records</h2>
+                    <div class="share-container">
+                        <div class="records-selection">
+                            <h3>Select Records to Share</h3>
+                            <div class="search-container">
+                                <input type="text" id="share-search" placeholder="Search records...">
+                            </div>
+                            <div id="sharable-records" class="records-list">
+                                <p class="empty-state">No records available to share.</p>
+                            </div>
+                        </div>
+                        <div class="share-form">
+                            <h3>Share Details</h3>
+                            <form id="share-form">
+                                <div class="form-group">
+                                    <label for="recipient-email">Recipient Email</label>
+                                    <input type="email" id="recipient-email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="recipient-name">Recipient Name (Optional)</label>
+                                    <input type="text" id="recipient-name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="access-level">Access Level</label>
+                                    <select id="access-level" required>
+                                        <option value="view">View Only</option>
+                                        <option value="download">View & Download</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="expiration-date">Access Expiration</label>
+                                    <input type="date" id="expiration-date" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="share-notes">Notes for Recipient</label>
+                                    <textarea id="share-notes" rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Share Records</button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Previously shared section -->
+                    <div class="shared-history">
+                        <h3>Previously Shared Records</h3>
+                        <table class="shared-table">
+                            <thead>
+                                <tr>
+                                    <th>Record</th>
+                                    <th>Shared With</th>
+                                    <th>Date Shared</th>
+                                    <th>Expiration</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shared-history">
+                                <tr>
+                                    <td colspan="6" class="empty-state">No sharing history.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Audit Log View -->
+                <section id="audit-view" class="view">
+                    <h2><i class="fas fa-history"></i> Audit Log</h2>
+                    <div class="audit-filters">
+                        <div class="form-group">
+                            <label for="audit-date-range">Date Range</label>
+                            <select id="audit-date-range">
+                                <option value="today">Today</option>
+                                <option value="week" selected>Last 7 Days</option>
+                                <option value="month">Last 30 Days</option>
+                                <option value="all">All Time</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="audit-type">Activity Type</label>
+                            <select id="audit-type">
+                                <option value="all" selected>All Activities</option>
+                                <option value="login">Login Events</option>
+                                <option value="upload">Upload Events</option>
+                                <option value="share">Share Events</option>
+                                <option value="view">View Events</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button id="export-audit" class="btn secondary-btn"><i class="fas fa-download"></i> Export Log</button>
+                        </div>
+                    </div>
+                    <div class="audit-log-container">
+                        <table class="audit-table">
+                            <thead>
+                                <tr>
+                                    <th>Date/Time</th>
+                                    <th>Activity</th>
+                                    <th>User</th>
+                                    <th>IP Address</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="audit-log-entries">
+                                <tr>
+                                    <td colspan="5" class="empty-state">No audit log entries found.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <!-- Settings View -->
+                <section id="settings-view" class="view">
+                    <h2><i class="fas fa-cog"></i> Settings</h2>
+                    
+                    <div class="settings-grid">
+                        <div class="settings-card">
+                            <h3>Profile Information</h3>
+                            <form id="profile-form">
+                                <div class="form-group">
+                                    <label for="profile-name">Full Name</label>
+                                    <input type="text" id="profile-name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-email">Email</label>
+                                    <input type="email" id="profile-email" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="profile-role">Role</label>
+                                    <input type="text" id="profile-role" readonly>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Update Profile</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3>Security Settings</h3>
+                            <form id="security-form">
+                                <div class="form-group">
+                                    <label for="current-password">Current Password</label>
+                                    <input type="password" id="current-password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="new-password">New Password</label>
+                                    <input type="password" id="new-password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="confirm-new-password">Confirm New Password</label>
+                                    <input type="password" id="confirm-new-password">
+                                </div>
+                                <div class="form-group checkbox-container">
+                                    <input type="checkbox" id="enable-mfa">
+                                    <label for="enable-mfa">Enable Two-Factor Authentication</label>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Update Security Settings</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3>Notification Preferences</h3>
+                            <form id="notification-form">
+                                <div class="form-group checkbox-container">
+                                    <input type="checkbox" id="notify-record-shared" checked>
+                                    <label for="notify-record-shared">Records shared with me</label>
+                                </div>
+                                <div class="form-group checkbox-container">
+                                    <input type="checkbox" id="notify-record-viewed" checked>
+                                    <label for="notify-record-viewed">My records viewed</label>
+                                </div>
+                                <div class="form-group checkbox-container">
+                                    <input type="checkbox" id="notify-login" checked>
+                                    <label for="notify-login">New login detected</label>
+                                </div>
+                                <div class="form-group checkbox-container">
+                                    <input type="checkbox" id="notify-system" checked>
+                                    <label for="notify-system">System notifications</label>
+                                </div>
+                                <button type="submit" class="btn primary-btn">Save Preferences</button>
+                            </form>
+                        </div>
+                        
+                        <div class="settings-card">
+                            <h3>Data Management</h3>
+                            <div class="form-group">
+                                <button id="export-data" class="btn secondary-btn"><i class="fas fa-download"></i> Export All Data</button>
+                            </div>
+                            <div class="form-group">
+                                <button id="import-data" class="btn secondary-btn"><i class="fas fa-upload"></i> Import Data</button>
+                            </div>
+                            <div class="form-group">
+                                <button id="delete-account" class="btn danger-btn"><i class="fas fa-trash"></i> Delete Account</button>
+                            </div>
+                        </div>
+
+                        <!-- Two-Factor Authentication -->
+                        <div class="form-group">
+                            <div class="checkbox-container" id="two-factor-auth-container">
+                                <input type="checkbox" id="two-factor-auth">
+                                <label for="two-factor-auth">Enable two-factor authentication</label>
+                            </div>
+                            <div class="help-text">Adds an extra layer of security to your account.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chatbot View -->
+                <section id="chatbot-view" class="view">
+                    <h2><i class="fas fa-robot"></i> Medical AI Assistant</h2>
+                    
+                    <div class="chatbot-container">
+                        <div class="chat-header">
+                            <p>Ask our AI assistant any medical questions or for help navigating the platform.</p>
+                        </div>
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message assistant">
+                                <div class="message-content">
+                                    <p>Hello! I'm your medical assistant. How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <textarea id="chat-input" placeholder="Type your message here..." rows="2"></textarea>
+                            <button id="send-message" class="btn primary-btn">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Toast Notifications -->
+            <div id="toast-container" class="toast-container"></div>
+        </div>
+    </div>
+</body>
+</html> 

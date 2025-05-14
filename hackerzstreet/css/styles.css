@@ -1,0 +1,2708 @@
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    caret-color: transparent !important; /* Hide caret everywhere by default */
+    cursor: default;
+    user-select: none;
+}
+
+:root {
+    --primary-color: #4361ee;
+    --primary-light: #a4c3ff;
+    --primary-dark: #0b44c0;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --text-color: #333;
+    --text-light: #777;
+    --bg-color: #f8f9fa;
+    --white: #ffffff;
+    --error: #e63946;
+    --success: #57cc99;
+    --warning: #ffb703;
+    --border-radius: 8px;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* Only allow carets in specific input elements */
+input[type="text"], 
+input[type="password"], 
+input[type="email"], 
+input[type="search"], 
+input[type="tel"], 
+input[type="url"], 
+input[type="number"], 
+textarea, 
+#chat-input {
+    caret-color: var(--primary-color) !important;
+    cursor: text !important;
+}
+
+/* Remove all other caret-related rules that might be conflicting */
+body, div, p, h1, h2, h3, h4, h5, h6, 
+section, header, footer, nav, button, select, label, span, 
+ul, ol, li, .checkbox-container, .form-group label, 
+label[for], .consent-section, .help-text, 
+.consent-section p, #two-factor-auth-container, 
+#security-form .checkbox-container {
+    caret-color: transparent !important;
+}
+
+/* Container Styles */
+.app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+    position: relative;
+    background-color: var(--bg-color);
+    align-items: center;
+    justify-content: center;
+}
+
+/* Authentication Styles */
+#auth-section {
+    display: none;
+    height: 100vh;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+#auth-section.active {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.auth-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    margin: 2rem auto;
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.logo h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.logo p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: var(--transition);
+    position: relative;
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+
+.form-container {
+    display: none;
+}
+
+.form-container.active {
+    display: block;
+}
+
+.form-container h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+}
+
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+/* Basic form element styles with visible carets */
+input, 
+select, 
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: var(--transition);
+    position: relative;
+    z-index: 1;
+    background-color: var(--white);
+    caret-color: var(--primary-color);
+}
+
+input:focus, 
+select:focus, 
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px var(--primary-light);
+}
+
+.help-text {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+/* Password strength meter */
+meter {
+    width: 100%;
+    height: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+meter::-webkit-meter-optimum-value {
+    background: var(--success);
+}
+
+meter::-webkit-meter-suboptimum-value {
+    background: var(--warning);
+}
+
+meter::-webkit-meter-even-less-good-value {
+    background: var(--error);
+}
+
+/* Checkbox container */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+}
+
+.checkbox-container input {
+    width: auto;
+    margin-right: 0.5rem;
+}
+
+.checkbox-container label {
+    margin-bottom: 0;
+}
+
+/* Consent section */
+.consent-section {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--primary-color);
+    color: var(--white);
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.btn:hover {
+    background-color: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.primary-btn {
+    width: 100%;
+    background-color: var(--primary-color);
+}
+
+.secondary-btn {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.secondary-btn:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* Main Application Styles */
+#app-section {
+    display: none;
+    min-height: 100vh;
+}
+
+#app-section.active {
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: var(--white);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .logo {
+    margin-bottom: 0;
+}
+
+header .logo h1 {
+    font-size: 1.5rem;
+    margin-bottom: 0;
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+.nav-link {
+    padding: 0.5rem 1rem;
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.1);
+}
+
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#user-name {
+    font-weight: 600;
+}
+
+.role-indicator {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    background-color: rgba(67, 97, 238, 0.1);
+    padding: 0.1rem 0.5rem;
+    border-radius: 10px;
+}
+
+.role-admin {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+}
+
+.role-doctor {
+    background-color: rgba(32, 201, 151, 0.1);
+    color: #20c997;
+}
+
+.role-patient {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: #0d6efd;
+}
+
+main {
+    flex: 1;
+    padding: 2rem;
+    max-width: 1280px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.view {
+    display: none;
+}
+
+.view.active {
+    display: block;
+}
+
+/* Special case for the login view */
+#login-view.view.active {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 100vh !important;
+    width: 100% !important;
+}
+
+/* Fix for app section views */
+#app-section .view {
+    display: none;
+}
+
+#app-section .view.active {
+    display: block !important;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Center the auth container */
+#login-view .auth-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+.view h2 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+    font-size: 1.75rem;
+}
+
+/* Dashboard Styles */
+.cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    color: var(--primary-color);
+    margin-bottom: 0.75rem;
+}
+
+.card p {
+    margin-bottom: 1rem;
+    color: var(--text-light);
+}
+
+.card button {
+    margin-top: 0.5rem;
+}
+
+.activity-list {
+    list-style: none;
+}
+
+.activity-item {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+/* Records View Styles */
+.controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 1.5rem;
+}
+
+.records-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-light);
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+/* Record card */
+.record-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    position: relative;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+}
+
+.record-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.record-type {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.record-type.lab {
+    background-color: var(--primary-color);
+}
+
+.record-type.prescription {
+    background-color: var(--success);
+}
+
+.record-type.imaging {
+    background-color: var(--warning);
+}
+
+.record-type.clinical {
+    background-color: var(--secondary-color);
+}
+
+.record-type.other {
+    background-color: var(--text-light);
+}
+
+.record-title {
+    margin-bottom: 0.75rem;
+    padding-right: 5rem;
+    font-size: 1.25rem;
+    color: var(--text-color);
+}
+
+.record-date {
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.record-notes {
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: var(--text-color);
+    flex-grow: 1;
+}
+
+.record-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Make close button more distinct */
+.record-actions .close-record-modal {
+    margin-right: 0.5rem;
+}
+
+/* Group the action buttons on the right */
+.record-actions > div {
+    display: flex;
+    gap: 0.75rem;
+}
+
+@media (max-width: 580px) {
+    .record-info {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Special treatment for record actions on mobile */
+    .record-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .record-actions > div {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+    }
+    
+    .record-actions button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Share view */
+.share-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.records-selection, .share-form {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+/* Audit Log Styles */
+.audit-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.audit-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.audit-table th,
+.audit-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.audit-table th {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+.audit-table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex !important;
+}
+
+.modal-content {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.close:hover {
+    color: var(--error);
+}
+
+.modal h2 {
+    margin-bottom: 1.5rem;
+}
+
+.note {
+    font-size: 0.8rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Prescription image viewer */
+.record-image-preview {
+    width: 100%;
+    margin: 1rem 0;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    position: relative;
+}
+
+.record-image-preview img {
+    width: 100%;
+    display: block;
+    border: 1px solid #eee;
+}
+
+.prescription-details {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.prescription-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.prescription-info div {
+    margin-bottom: 0.5rem;
+}
+
+.prescription-info .label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.prescription-info .value {
+    font-size: 1rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+    
+    nav ul {
+        margin: 1rem 0;
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+    
+    .user-menu {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .share-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .cards-container,
+    .records-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Prescription Viewer Modal */
+.prescription-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.prescription-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.prescription-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+.prescription-image {
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}
+
+.prescription-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+}
+
+/* File uploader with preview */
+.file-upload-container {
+    border: 2px dashed #ddd;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.file-upload-container:hover,
+.file-upload-container.highlight {
+    border-color: var(--primary-color);
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.file-upload-container input[type="file"] {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.upload-hint {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.file-types {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.file-preview {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: var(--border-radius);
+    background-color: #f9f9f9;
+}
+
+.file-preview h4 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.preview-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.file-info {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.file-info p {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    border: 1px solid #eee;
+}
+
+.file-icon {
+    font-size: 3rem;
+    margin: 1rem 0;
+    color: var(--primary-color);
+}
+
+.file-icon i.fa-file-pdf {
+    color: #e74c3c;
+}
+
+.file-icon i.fa-file-word {
+    color: #3498db;
+}
+
+/* Notifications dropdown styling */
+.notifications-dropdown {
+    position: relative;
+    margin-right: 15px;
+}
+
+.notifications-btn {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: var(--error);
+    color: var(--white);
+    font-size: 0.7rem;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.notifications-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 350px;
+    max-height: 400px;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    overflow-y: auto;
+    display: none;
+}
+
+/* Remove hover-based display */
+/* .notifications-btn:focus + .notifications-menu,
+.notifications-menu:hover {
+    display: block;
+} */
+
+/* For JavaScript toggle */
+.notifications-menu.active {
+    display: block;
+}
+
+.notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+    background-color: #f9f9fb;
+}
+
+.notifications-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.notifications-header button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+}
+
+.notifications-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notifications-list li {
+    padding: 10px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.notifications-list li:last-child {
+    border-bottom: none;
+}
+
+.notification-item {
+    display: flex;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.notification-item:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+.notification-icon {
+    margin-right: 10px;
+    color: var(--primary-color);
+    font-size: 1.2rem;
+    min-width: 25px;
+    display: flex;
+    align-items: flex-start;
+    padding-top: 3px;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.notification-message {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.notification-time {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+.notification-unread {
+    background-color: rgba(67, 97, 238, 0.08);
+    position: relative;
+}
+
+.notification-unread::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background-color: var(--primary-color);
+}
+
+.empty-notification {
+    text-align: center;
+    color: var(--text-light);
+    padding: 20px;
+    font-style: italic;
+}
+
+/* Dashboard summary */
+.dashboard-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.summary-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    transition: var(--transition);
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.summary-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgba(67, 97, 238, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: var(--primary-color);
+    font-size: 1.5rem;
+}
+
+.summary-info h3 {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+}
+
+.summary-count {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0;
+}
+
+/* Quick actions */
+.quick-actions {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+    margin-top: 2rem;
+}
+
+.quick-actions h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-color);
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Mini records list */
+.mini-records-list {
+    margin: 1rem 0;
+}
+
+.mini-record-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.mini-record-item:last-child {
+    border-bottom: none;
+}
+
+.mini-record-type {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+    color: var(--white);
+    font-size: 0.8rem;
+}
+
+.mini-record-type.lab {
+    background-color: var(--primary-color);
+}
+
+.mini-record-type.prescription {
+    background-color: var(--success);
+}
+
+.mini-record-type.imaging {
+    background-color: var(--warning);
+}
+
+.mini-record-type.clinical {
+    background-color: var(--secondary-color);
+}
+
+.mini-record-type.other {
+    background-color: var(--text-light);
+}
+
+.mini-record-info {
+    flex: 1;
+}
+
+.mini-record-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+}
+
+.mini-record-date {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+/* View controls */
+.view-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.search-container {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-container input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+.search-container button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 40px;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+}
+
+.filter-container {
+    min-width: 150px;
+}
+
+/* Shared history */
+.shared-history {
+    margin-top: 2rem;
+}
+
+.shared-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-top: 1rem;
+}
+
+.shared-table th,
+.shared-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.shared-table th {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    font-weight: 600;
+}
+
+/* Settings */
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+.settings-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.settings-card h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.75rem;
+}
+
+.danger-btn {
+    background-color: var(--error);
+    color: var(--white);
+}
+
+.danger-btn:hover {
+    background-color: #d32f2f;
+}
+
+/* Toast notifications */
+.toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.toast {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    max-width: 350px;
+    animation: slideIn 0.3s ease-out forwards;
+}
+
+.toast.success {
+    border-left: 4px solid var(--success);
+}
+
+.toast.error {
+    border-left: 4px solid var(--error);
+}
+
+.toast.info {
+    border-left: 4px solid var(--primary-color);
+}
+
+.toast.warning {
+    border-left: 4px solid var(--warning);
+}
+
+.toast-icon {
+    margin-right: 0.75rem;
+    font-size: 1.25rem;
+}
+
+.toast.success .toast-icon {
+    color: var(--success);
+}
+
+.toast.error .toast-icon {
+    color: var(--error);
+}
+
+.toast.info .toast-icon {
+    color: var(--primary-color);
+}
+
+.toast.warning .toast-icon {
+    color: var(--warning);
+}
+
+.toast-content {
+    flex: 1;
+}
+
+.toast-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.toast-message {
+    font-size: 0.875rem;
+    color: var(--text-light);
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    margin-left: 0.5rem;
+    font-size: 1.25rem;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.toast.removing {
+    animation: slideOut 0.3s ease-in forwards;
+}
+
+@media (max-width: 768px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .dashboard-summary,
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .view-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-container {
+        max-width: none;
+    }
+}
+
+/* Record Viewer Modal */
+.record-view-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.record-view-modal.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.record-modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    max-width: 800px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Make close button more distinct */
+.record-view-modal .close-record-modal {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(240, 240, 240, 0.7);
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.record-view-modal .close-record-modal:hover {
+    color: var(--error);
+    background-color: rgba(240, 240, 240, 0.9);
+}
+
+/* Move type badge to make room for close button */
+.record-modal-type-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 4rem; /* Increased from 1.5rem to add more space from close button */
+    padding: 0.35rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.record-modal-type-badge.lab {
+    background-color: var(--primary-color);
+}
+
+.record-modal-type-badge.prescription {
+    background-color: var(--success);
+}
+
+.record-modal-type-badge.imaging {
+    background-color: var(--warning);
+}
+
+.record-modal-type-badge.clinical {
+    background-color: var(--secondary-color);
+}
+
+.record-modal-type-badge.other {
+    background-color: var(--text-light);
+}
+
+.record-image-container {
+    margin: 1.5rem 0;
+    position: relative;
+    text-align: center;
+    border: 1px solid #eee;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+}
+
+.record-image {
+    max-width: 100%;
+    max-height: 400px;
+    border-radius: var(--border-radius);
+    transition: transform 0.3s ease;
+    transform-origin: center center;
+}
+
+.image-controls {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.image-controls button {
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.record-details {
+    background-color: rgba(67, 97, 238, 0.05);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    border-left: 4px solid var(--primary-color);
+}
+
+.record-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.record-info div {
+    margin-bottom: 0.5rem;
+}
+
+.record-info .label {
+    font-weight: 600;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+.record-info .value {
+    font-size: 1rem;
+}
+
+/* These record-actions styles are moved to the modal-specific section */
+
+/* File display in record viewer */
+.file-display-area {
+    width: 100%;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.pdf-container, .file-icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background-color: #f8f9fa;
+    border-radius: var(--border-radius);
+    width: 100%;
+    height: 300px;
+}
+
+.pdf-icon, .file-icon-container .file-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+.pdf-icon i {
+    color: #e74c3c;
+}
+
+.pdf-container p, .file-icon-container p {
+    color: var(--text-light);
+    text-align: center;
+}
+
+.file-metadata {
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.file-metadata-content {
+    font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.file-metadata-content p {
+    margin-bottom: 0.5rem;
+}
+
+/* Role-based styling */
+body[data-role="patient"] .doctor-only,
+body[data-role="doctor"] .patient-only,
+body[data-role="patient"] .admin-only,
+body[data-role="doctor"] .admin-only,
+body[data-role="admin"] .patient-only,
+body[data-role="admin"] .doctor-only {
+    display: none !important;
+}
+
+.doctor-badge,
+.patient-badge,
+.admin-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--white);
+    margin-left: 0.5rem;
+}
+
+.doctor-badge {
+    background-color: #3498db;
+}
+
+.patient-badge {
+    background-color: #2ecc71;
+}
+
+.admin-badge {
+    background-color: #9b59b6;
+}
+
+/* Role Switcher Controls */
+.role-controls {
+    display: flex;
+    align-items: center;
+    margin-right: 1rem;
+    position: relative;
+}
+
+.role-switcher {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 120px;
+    display: none;
+    z-index: 100;
+    overflow: hidden;
+}
+
+.role-controls:hover .role-switcher {
+    display: block;
+}
+
+.role-switch-btn {
+    width: 100%;
+    padding: 0.6rem;
+    border: none;
+    background: none;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.role-switch-btn:hover {
+    background-color: #f0f0f0;
+}
+
+.role-switch-btn[data-role="patient"] {
+    color: #2ecc71;
+}
+
+.role-switch-btn[data-role="doctor"] {
+    color: #3498db;
+}
+
+.role-switch-btn[data-role="admin"] {
+    color: #9b59b6;
+}
+
+/* Selected record for sharing */
+.record-card.selected-for-sharing {
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 0 0 4px var(--primary-light);
+    transform: scale(1.02);
+}
+
+.record-card .select-for-sharing {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1.25rem;
+    color: var(--primary-color);
+    display: none;
+}
+
+.record-card.selected-for-sharing .select-for-sharing {
+    display: block;
+}
+
+.status-active {
+    color: var(--success);
+    font-weight: 600;
+}
+
+.status-revoked {
+    color: var(--error);
+    font-weight: 600;
+}
+
+.status-expired {
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+/* Small buttons for tables */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8rem;
+}
+
+/* Role-specific themes */
+body[data-role="doctor"] {
+    --primary-color: #3498db;
+    --primary-light: #a0cfff;
+    --primary-dark: #2980b9;
+}
+
+body[data-role="patient"] {
+    --primary-color: #4361ee;
+    --primary-light: #a4c3ff;
+    --primary-dark: #0b44c0;
+}
+
+body[data-role="admin"] {
+    --primary-color: #9b59b6;
+    --primary-light: #d5b8ff;
+    --primary-dark: #8e44ad;
+}
+
+/* Role-specific dashboard elements */
+.doctor-dashboard {
+    background-color: rgba(52, 152, 219, 0.1);
+    border-left: 4px solid #3498db;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.patient-dashboard {
+    background-color: rgba(67, 97, 238, 0.1);
+    border-left: 4px solid var(--primary-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+.admin-dashboard {
+    background-color: rgba(155, 89, 182, 0.1);
+    border-left: 4px solid #9b59b6;
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+}
+
+/* Patient-specific views */
+.vital-signs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.vital-sign {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.vital-sign-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+    color: var(--primary-color);
+}
+
+.vital-sign-label {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+/* Doctor-specific views */
+.patient-list {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+}
+
+.patient-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: a1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.patient-list-header h3 {
+    margin: 0;
+}
+
+.patient-item {
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+}
+
+.patient-item:last-child {
+    border-bottom: none;
+}
+
+.patient-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.patient-info {
+    flex: 1;
+}
+
+.patient-name {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.patient-details {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.patient-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Admin-specific views */
+.system-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.stat-title {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.stat-change {
+    font-size: 0.8rem;
+}
+
+.stat-change.positive {
+    color: var(--success);
+}
+
+.stat-change.negative {
+    color: var(--error);
+}
+
+.user-management {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Chatbot Styles */
+.chatbot-container {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    margin: 0 auto;
+    max-width: 900px;
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-header {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.chat-header h3 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.chat-header p {
+    margin: 0.3rem 0 0;
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    background-color: #f9f9fb;
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    scroll-behavior: smooth;
+}
+
+/* Add animations for new messages */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+    display: flex;
+    max-width: 80%;
+    margin-bottom: 0.5rem;
+    animation: fadeIn 0.3s ease-out forwards;
+}
+
+.message.user {
+    align-self: flex-end;
+}
+
+.message.assistant {
+    align-self: flex-start;
+}
+
+.message-content {
+    padding: 0.75rem 1rem;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.message.user .message-content {
+    background-color: var(--primary-color);
+    color: white;
+    border-bottom-right-radius: 4px;
+    font-weight: 400;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.message.assistant .message-content {
+    background-color: #f0f2f5;
+    color: var(--text-color);
+    border-bottom-left-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    font-weight: 400;
+}
+
+.message-content p {
+    margin: 0 0 0.5rem 0;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+.message-time {
+    font-size: 0.75rem;
+    margin-top: 0.3rem;
+    text-align: right;
+    opacity: 0.8;
+}
+
+.message.user .message-time {
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+.message.assistant .message-time {
+    color: var(--text-light);
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 1rem;
+    background-color: var(--white);
+    border-top: 1px solid #eee;
+    align-items: center;
+}
+
+#chat-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 24px;
+    resize: none;
+    font-family: inherit;
+    font-size: 0.95rem;
+    margin-right: 0.75rem;
+    caret-color: var(--primary-color);
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    line-height: 1.4;
+}
+
+#chat-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.1);
+}
+
+#send-message {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+#send-message:hover {
+    background-color: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+#send-message:active {
+    transform: scale(0.95);
+}
+
+#send-message i {
+    font-size: 1.1rem;
+}
+
+.message-thinking {
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: #f0f2f5;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    align-self: flex-start;
+    max-width: 60px;
+    margin-bottom: 0.5rem;
+}
+
+.thinking-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    animation: thinking 1.4s infinite ease-in-out both;
+    opacity: 0.7;
+}
+
+.thinking-dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.thinking-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.thinking-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes thinking {
+    0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+    }
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Responsive adjustments for chatbot */
+@media (max-width: 768px) {
+    .chatbot-container {
+        height: calc(100vh - 140px);
+        max-width: 100%;
+        margin: 0;
+        border-radius: 0;
+    }
+    
+    .message {
+        max-width: 85%;
+    }
+    
+    .chat-messages {
+        padding: 1rem;
+    }
+    
+    .chat-input-container {
+        padding: 0.75rem;
+    }
+    
+    #chat-input {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    #send-message {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .message {
+        max-width: 90%;
+    }
+    
+    .message-content {
+        padding: 0.6rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Fix for caret blinking issue */
+*:focus-visible {
+    outline: none;
+}
+
+*:focus {
+    outline: none;
+}
+
+/* Make caret only visible in input elements - FIXED to ensure visibility in inputs */
+:not(input):not(textarea):not([contenteditable="true"]) {
+    caret-color: transparent;
+}
+
+/* Ensure caret is visible in input elements */
+input, textarea, [contenteditable="true"] {
+    caret-color: auto !important;
+}
+
+/* Set specific caret color for form elements */
+.form-container input, 
+.form-container textarea,
+#chat-input {
+    caret-color: var(--primary-color) !important;
+}
+
+/* Prevent text selection in non-input elements */
+.chat-messages .message-content {
+    user-select: text;
+}
+
+.auth-container input,
+.auth-container textarea {
+    caret-color: var(--primary-color);
+}
+
+#login-form input:focus,
+#signup-form input:focus {
+    caret-color: var(--primary-color);
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* Fix caret visibility in checkbox areas */
+.checkbox-container,
+.checkbox-container label,
+.form-group label,
+label[for],
+.consent-section {
+    caret-color: transparent !important;
+    cursor: default;
+}
+
+/* Ensure checkbox elements have the correct cursor */
+.checkbox-container input[type="checkbox"],
+input[type="checkbox"],
+input[type="radio"],
+label[for] {
+    cursor: pointer;
+}
+
+/* Make sure no caret appears in areas near form controls */
+.form-group,
+.help-text,
+.consent-section p {
+    caret-color: transparent !important;
+}
+
+/* Specific fix for 2FA checkbox and similar authentication UI elements */
+#two-factor-auth-container,
+#two-factor-auth-container label,
+#security-form .checkbox-container,
+.checkbox-container input[type="checkbox"] + label {
+    caret-color: transparent !important;
+    user-select: none;
+}
+
+/* Global cursor defaults */
+* {
+    cursor: default;
+}
+
+/* Interactive elements */
+a, 
+button, 
+.btn,
+input[type="submit"],
+input[type="button"],
+.nav-link,
+.tab-btn,
+.record-card,
+.card,
+label[for] {
+    cursor: pointer !important;
+}
+
+/* Form controls */
+input[type="checkbox"],
+input[type="radio"],
+select {
+    cursor: pointer !important;
+}
+
+/* Text input elements */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"],
+input:not([type="checkbox"]):not([type="radio"]),
+textarea,
+[contenteditable="true"] {
+    cursor: text !important;
+}
+
+/* Form labels - ensure no caret and prevent selection */
+label, 
+.form-group label, 
+.checkbox-container label {
+    caret-color: transparent !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Interactive elements get pointer cursor */
+a, button, .btn, select,
+input[type="checkbox"], input[type="radio"],
+input[type="submit"], input[type="button"],
+label[for], .nav-link, .tab-btn, .record-card, .card {
+    cursor: pointer !important;
+}
+
+/* Text areas where selection should be allowed */
+input[type="text"], 
+input[type="password"], 
+input[type="email"], 
+input[type="search"], 
+input[type="tel"], 
+input[type="url"], 
+input[type="number"], 
+textarea, 
+#chat-input,
+.chat-messages,
+.message-content,
+p:not(.checkbox-container p),
+.records-list,
+.record-notes {
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+}
+
+/* Quick upload section */
+.quick-upload-section {
+    display: flex;
+    align-items: center;
+    background-color: var(--bg-color);
+    padding: 0.75rem 1rem;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.quick-upload-section .tip {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.quick-upload-section .btn {
+    min-width: 130px;
+}
+
+/* Chat typing animation effects */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.message p {
+    min-height: 1.4em;
+}
+
+/* Remove blinking caret */
+.message.assistant p:empty::after {
+    content: '';
+    display: none;
+}
+
+/* Ensure messages with transitions appear properly */
+.message p {
+    transition-property: opacity;
+    transition-timing-function: linear;
+}
+
+/* Message styling */
+.error-message {
+    color: #dc3545;
+    background-color: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.2);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+}
+
+.success-message {
+    color: #28a745;
+    background-color: rgba(40, 167, 69, 0.1);
+    border: 1px solid rgba(40, 167, 69, 0.2);
+    border-radius: var(--border-radius);
+    padding: 10px;
+    margin: 10px 0;
+    font-size: 0.9rem;
+}
+
+.text-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.text-link:hover {
+    text-decoration: underline;
+}
+
+/* Modal specific fixes */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    overflow: auto;
+    padding: 20px;
+}
+
+.modal.active {
+    display: flex !important;
+}
+
+.modal-content {
+    background-color: var(--white);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 90%;
+    max-width: 600px;
+    padding: 2rem;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+/* Make all buttons clickable */
+button, 
+.btn, 
+input[type="button"], 
+input[type="submit"],
+.nav-link,
+.close {
+    cursor: pointer !important;
+}
+
+/* Fix upload form buttons */
+#upload-record-btn,
+#upload-record-empty-btn,
+#quick-upload-records-btn,
+#quick-upload {
+    position: relative;
+    z-index: 5;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+
+/* Record Modal Styles */
+.modal#record-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+.modal#record-modal .modal-content {
+    background-color: var(--white);
+    margin: 5% auto;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 90%;
+    max-width: 800px;
+    position: relative;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal#record-modal .close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    color: var(--text-light);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.modal#record-modal .close:hover {
+    color: var(--error);
+}
+
+.modal#record-modal .record-title {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    color: var(--primary-dark);
+    padding-right: 2rem;
+}
+
+.record-details-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.record-metadata {
+    background-color: var(--bg-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.record-metadata p {
+    margin-bottom: 0.5rem;
+}
+
+.record-metadata p:last-child {
+    margin-bottom: 0;
+}
+
+.record-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    background-color: var(--bg-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    position: relative;
+}
+
+.record-image-container img.record-image {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+    border-radius: var(--border-radius);
+    margin-bottom: 1rem;
+}
+
+.pdf-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pdf-container embed,
+.pdf-container iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    margin: 1rem 0;
+}
+
+.pdf-link {
+    display: inline-flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.pdf-link i {
+    margin-right: 0.5rem;
+}
+
+.document-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+}
+
+.document-link {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.document-link i {
+    margin-right: 0.5rem;
+}
+
+.document-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    border: 1px dashed var(--text-light);
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+}
+
+.document-icon {
+    font-size: 3rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.document-name {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    text-align: center;
+}
+
+.loading-indicator {
+    display: flex;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.loading-indicator i {
+    font-size: 2rem;
+    color: var(--primary-color);
+}
+
+.error-message {
+    color: var(--error);
+    padding: 1rem;
+    background-color: rgba(230, 57, 70, 0.1);
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.record-actions-container {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .modal#record-modal .modal-content {
+        width: 95%;
+        margin: 2% auto;
+        padding: 1.5rem;
+    }
+    
+    .record-details-container {
+        flex-direction: column;
+    }
+    
+    .record-image-container img.record-image {
+        max-height: 300px;
+    }
+    
+    .pdf-container embed,
+    .pdf-container iframe {
+        height: 400px;
+    }
+} 
